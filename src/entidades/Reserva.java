@@ -43,9 +43,19 @@ public class Reserva {
         return TimeUnit.DAYS.convert(diferenca, TimeUnit.MILLISECONDS); //faz uso do tipo enumerado complexo pra converter em dias
     }
     
-    public void updateDates(Date checkIn, Date checkOut){
+    public String updateDates(Date checkIn, Date checkOut){
+        Date agora = new Date();
+        if(checkIn.before(agora) || checkOut.before(agora)){
+            return "Error in reservation: As datas para atualização devem ser datas futuras";
+        }
+        if (!checkOut.after(checkIn)){
+            return "Error in reservation: Data de check-out não pode ser anterior a data de check-in";
+        }
+        
         this.checkIn = checkIn;
         this.checkOut = checkOut;
+        
+        return null;
     }
     
     @Override

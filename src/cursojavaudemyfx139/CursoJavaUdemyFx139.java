@@ -33,16 +33,12 @@ public class CursoJavaUdemyFx139 {
             System.out.print("Data do Check-Out (dd/MM/yyyy): ");
             checkout = sdf.parse(sc.next()); 
             
-            Date agora = new Date();
-            if(checkin.before(agora) || checkout.before(agora)){
-                System.out.println("Error in reservation: As datas para atualização devem ser futuras");
-            } else if (!checkout.after(checkin)){
-                System.out.println("Erro in reservation: Data de check-out não pode ser anterior a data de check-in");
-            } else{
-                reserva.updateDates(checkin, checkout);
+            String error = reserva.updateDates(checkin, checkout);
+            if (error != null){
+                System.out.println("Reserva erro: " + error);
+            } else {
                 System.out.println("Reserva: " + reserva);
             }
-
         }
         
         sc.close();
