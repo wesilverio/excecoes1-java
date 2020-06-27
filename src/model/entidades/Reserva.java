@@ -1,9 +1,10 @@
 
-package entidades;
+package model.entidades;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import model.exceptions.DomainException;
 
 public class Reserva {
     private Integer numQuarto;
@@ -16,7 +17,12 @@ public class Reserva {
     public Reserva() {
     }
 
-    public Reserva(Integer numQuarto, Date checkIn, Date checkOut) {
+    public Reserva(Integer numQuarto, Date checkIn, Date checkOut) throws DomainException {
+        //Programação defensiva, procura tratar as excecções no começo do método
+        if (!checkOut.after(checkIn)){
+            throw new DomainException("Data de check-out não pode ser anterior a data de check-in");
+        }
+        
         this.numQuarto = numQuarto;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -43,19 +49,19 @@ public class Reserva {
         return TimeUnit.DAYS.convert(diferenca, TimeUnit.MILLISECONDS); //faz uso do tipo enumerado complexo pra converter em dias
     }
     
-    public String updateDates(Date checkIn, Date checkOut){
+    public void updateDates(Date checkIn, Date checkOut) throws DomainException{
         Date agora = new Date();
         if(checkIn.before(agora) || checkOut.before(agora)){
-            return "Error in reservation: As datas para atualização devem ser datas futuras";
+            //excecção usada qdo os argumentos passados para um método são inválidos
+            throw new DomainException("As datas para atualização devem ser datas futuras");
         }
         if (!checkOut.after(checkIn)){
-            return "Error in reservation: Data de check-out não pode ser anterior a data de check-in";
+            throw new DomainException("Data de check-out não pode ser anterior a data de check-in");
         }
-        
+
         this.checkIn = checkIn;
         this.checkOut = checkOut;
-        
-        return null;
+
     }
     
     @Override
